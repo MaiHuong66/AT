@@ -1,29 +1,22 @@
 import os
 from urllib.parse import quote
-
 import pytest
 from selenium import webdriver
-
 from helpers.flutter_helper import SCREENSHOT_DIR, FlutterHelper
 from helpers.login import login, select_context
 from locators import anomaly_report as L
-
 BASE = "mesgo-bunbo.kaizengo.vn"
-CONTEXT_WAIT = 3     # số giây chờ hộp thoại chọn nhà máy hiện lại sau mỗi lần tải trang
-
+CONTEXT_WAIT = 2    # số giây chờ hộp thoại chọn nhà máy hiện lại sau mỗi lần tải trang
 _SECRET_ENV = ("MESGO_USER", "MESGO_PASS", "MESGO_ACC_PASS")
-
 
 def auth_url():
     u = quote(os.environ["MESGO_USER"], safe="")
     p = quote(os.environ["MESGO_PASS"], safe="")
     return f"https://{u}:{p}@{BASE}/"
 
-
 def open_site(driver, path=""):
     driver.get(auth_url())                  # nạp thông tin Basic Auth
     driver.get(f"https://{BASE}/{path}")    # vào bằng URL sạch (Flutter không chạy được khi URL có user:pass)
-
 
 def dump_failure(driver, name):
     """Chụp ảnh, in chữ đang hiện trên màn hình và log lỗi của trình duyệt (đã ẩn thông tin đăng nhập)."""
@@ -62,7 +55,6 @@ def dump_failure(driver, name):
     except Exception as ex:
         print("  (không đọc được log)", str(ex)[:100])
 
-
 @pytest.fixture(scope="session")
 def driver():
     opts = webdriver.ChromeOptions()
@@ -72,7 +64,6 @@ def driver():
     d.maximize_window()
     yield d
     d.quit()
-
 
 @pytest.fixture(scope="session")
 def logged_in(driver):
@@ -86,7 +77,6 @@ def logged_in(driver):
         dump_failure(driver, "loi_dang_nhap")
         raise
     return f
-
 
 @pytest.fixture
 def anomaly_page(driver, logged_in):
@@ -102,7 +92,6 @@ def anomaly_page(driver, logged_in):
         dump_failure(driver, "loi_trang_phieu")
         raise
     return f
-
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
