@@ -1,5 +1,4 @@
 import os
-
 from selenium.common.exceptions import (
     MoveTargetOutOfBoundsException,
     NoSuchElementException,
@@ -11,11 +10,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
 from helpers.waits import wait_until
-
 SCREENSHOT_DIR = os.path.join("reports", "screenshots")
-
 # Đọc chữ của nhiều phần tử trong MỘT lệnh để tránh stale element khi Flutter dựng lại cây thẻ.
 _TEXTS_JS = """
 const res = document.evaluate(arguments[0], document, null,
@@ -26,18 +22,14 @@ for (let i = 0; i < res.snapshotLength; i++) {
 }
 return out;
 """
-
 _INPUT_FOCUSED_JS = "return ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)"
 _ACTIVE_VALUE_JS = "const a = document.activeElement; return (a && a.value !== undefined) ? a.value : null"
 
-
 class FlutterHelper:
     """Các thao tác chung cho web Flutter (đọc qua cây flt-semantics)."""
-
     def __init__(self, driver, timeout=20):
         self.driver = driver
         self.wait = WebDriverWait(driver, timeout)
-
     # ---------- Khởi động ----------
     def enable_semantics(self):
         d = self.driver
@@ -75,7 +67,6 @@ class FlutterHelper:
     def wait_stable(self, locator, timeout=3, hold=0.3):
         """Chờ vị trí/kích thước phần tử đứng yên liên tục `hold` giây (Flutter đang dựng lại layout)."""
         last = [None]
-
         def same():
             try:
                 r = self.driver.find_element(*locator).rect
@@ -86,7 +77,6 @@ class FlutterHelper:
             ok = cur == last[0]
             last[0] = cur
             return ok
-
         return wait_until(same, timeout, step=0.15, stable=hold)
 
     def wait_input_focused(self, timeout=3):

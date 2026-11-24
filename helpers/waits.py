@@ -1,6 +1,5 @@
 import time
 
-
 def wait_until(predicate, timeout=10, step=0.3, stable=0.0):
     """Chờ đến khi predicate() trả về giá trị đúng.
 
